@@ -1,8 +1,10 @@
+"use client";
 import { useQuery } from "@tanstack/react-query";
 import { axiosInstance } from "@/lib/utils";
 import { QueryKey } from "../../constants";
 import { CategoryType } from "@/app/types";
-
+import { useRecoilValue } from "recoil";
+import { authAtom } from "@/app/atoms";
 export function useListAllCategories({
   enabled = true,
   skipGlobalLoadingSpinner = false,
@@ -10,12 +12,20 @@ export function useListAllCategories({
   enabled?: boolean;
   skipGlobalLoadingSpinner?: boolean;
 }) {
+  const { token } = useRecoilValue(authAtom);
   return useQuery({
-    queryKey: [QueryKey.List_ALL_CATEGORIES, "userProfileId", "params"],
+    queryKey: [QueryKey.List_ALL_CATEGORIES, "params"],
     queryFn: async function listAllCategories(): Promise<CategoryType[]> {
+      if (!token) {
+        return Promise.reject("Invalid request");
+      }
+
       const { data } = await axiosInstance.get(
         `categories/get-all-categories`,
         {
+          headers: {
+            authorization: `Auth ${token}`,
+          },
           params: {
             token: "token",
           },

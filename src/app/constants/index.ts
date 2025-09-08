@@ -13,4 +13,5 @@ export enum ModelStatus {
 export enum QueryKey {
   "List_ALL_CATEGORIES" = "listAllCategories",
   "List_ALL_SERVICES" = "listAllServices",
+  "LIST_ALL_ACTIVE_SERVICES" = "listAllActiveServices",
 }
