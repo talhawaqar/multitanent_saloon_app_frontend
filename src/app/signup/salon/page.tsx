@@ -74,7 +74,7 @@ export default function SalonRegistrationPage() {
         name: values.businessName,
         description: values.businessDescription,
         services: values.services.map((ser) => ({
-          service_id: ser.id,
+          serviceId: ser.id,
           duration: ser.duration,
           price: ser.price,
         })),

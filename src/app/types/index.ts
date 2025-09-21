@@ -72,3 +72,17 @@ export interface LoginValues {
   username: string;
   password: string;
 }
+
+export interface BusinessEntityMainInfoType {
+  business_id: number;
+  business_name: string;
+  owner_name: string;
+  business_created_at: Date;
+  no_of_services: number;
+  owner_email: string;
+  owner_contact: string;
+  average_rating: number;
+  total_bookings: number;
+  status: string;
+  location_addresses: string[];
+}

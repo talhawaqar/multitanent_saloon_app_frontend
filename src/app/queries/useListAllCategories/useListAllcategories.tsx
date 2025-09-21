@@ -3,8 +3,8 @@ import { useQuery } from "@tanstack/react-query";
 import { axiosInstance } from "@/lib/utils";
 import { QueryKey } from "../../constants";
 import { CategoryType } from "@/app/types";
-import { useRecoilValue } from "recoil";
-import { authAtom } from "@/app/atoms";
+import { useAtom } from "jotai";
+import { authAtom } from "../../atoms";
 export function useListAllCategories({
   enabled = true,
   skipGlobalLoadingSpinner = false,
@@ -12,7 +12,7 @@ export function useListAllCategories({
   enabled?: boolean;
   skipGlobalLoadingSpinner?: boolean;
 }) {
-  const { token } = useRecoilValue(authAtom);
+  const [{ token }] = useAtom(authAtom);
   return useQuery({
     queryKey: [QueryKey.List_ALL_CATEGORIES, "params"],
     queryFn: async function listAllCategories(): Promise<CategoryType[]> {

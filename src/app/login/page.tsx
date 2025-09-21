@@ -1,9 +1,8 @@
 "use client";
-
 import { useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import { useSetRecoilState } from "recoil";
+import { useAtom } from "jotai";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -42,7 +41,7 @@ export default function LoginPage() {
   const [loginError, setLoginError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
-  const setAuthValues = useSetRecoilState(authAtom);
+  const [_, setAuthValues] = useAtom(authAtom);
 
   const { mutateAsync: loginUser } = useLoginUser();
 
@@ -55,35 +54,15 @@ export default function LoginPage() {
 
       if (!!data.token) {
         console.log("asad", data.token);
-        setAuthValues({ token: data.token });
+        setAuthValues({
+          token: data.token,
+          userProfileTypeCode: data.userProfileTypeCode,
+        });
       }
 
       if (data.userProfileTypeCode == UserProfileTypeCode.ADMIM) {
         router.push("/admin/dashboard");
       }
-      // Simulate API call
-      // await new Promise((resolve) => setTimeout(resolve, 1500));
-      // Mock authentication logic
-      // if (
-      //   values.uer === "user@example.com" &&
-      //   values.password === "password123"
-      // ) {
-      //   // Successful login
-      //   console.log("Login successful:", values);
-      //   // Store auth token (in real app, this would come from API)
-      //   const token = "mock-user-token";
-      //   if (values.rememberMe) {
-      //     localStorage.setItem("authToken", token);
-      //   } else {
-      //     sessionStorage.setItem("authToken", token);
-      //   }
-      //   // Redirect to dashboard
-      //   router.push("/dashboard");
-      // } else {
-      //   setLoginError(
-      //     "Invalid email or password. Please check your credentials and try again."
-      //   );
-      // }
     } catch (error) {
       setLoginError("An error occurred during login. Please try again.");
       console.error("Login error:", error);

@@ -1,10 +1,6 @@
-"use client";
+import { atomWithStorage } from "jotai/utils";
 
-import { atom } from "recoil";
-
-export const authAtom = atom({
-  key: "token",
-  default: {
-    token: "",
-  } as { token: string },
+export const authAtom = atomWithStorage("auth", {
+  token: "",
+  userProfileTypeCode: "",
 });

@@ -11,7 +11,7 @@ export function useListAllActiveServices({
   skipGlobalLoadingSpinner?: boolean;
 }) {
   return useQuery({
-    queryKey: [QueryKey.LIST_ALL_ACTIVE_SERVICES, "userProfileId", "params"],
+    queryKey: [QueryKey.LIST_ALL_ACTIVE_SERVICES],
     queryFn: async function listAllActiveServices(): Promise<ServiceType[]> {
       const { data } = await axiosInstance.get(`services/get-active-services`, {
         params: {
