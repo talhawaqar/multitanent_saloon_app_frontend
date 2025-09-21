@@ -2,34 +2,32 @@ import { useQuery } from "@tanstack/react-query";
 import { useAtom } from "jotai";
 import { axiosInstance } from "@/lib/utils";
 import { QueryKey } from "../../constants";
-import { ServiceType } from "@/app/types";
 import { authAtom } from "../../atoms";
+import { BusinessEntityMainInfoType } from "@/app/types";
 
-export function useListAllServices({
-  enabled = true,
-  skipGlobalLoadingSpinner = false,
-}: {
-  enabled?: boolean;
-  skipGlobalLoadingSpinner?: boolean;
-}) {
+export function useBusinessEntityById(id?: number) {
   const [{ token }] = useAtom(authAtom);
+
   return useQuery({
-    queryKey: [QueryKey.List_ALL_SERVICES],
-    queryFn: async function listAllCategories(): Promise<ServiceType[]> {
+    queryKey: [QueryKey.BUSINESS_ENTITY_BY_ID],
+    queryFn: async function getBusinessEntityById(): Promise<
+      BusinessEntityMainInfoType[]
+    > {
       if (!token) {
         return Promise.reject("Invalid request");
       }
-      const { data } = await axiosInstance.get(`services/get-all-services`, {
+
+      const { data } = await axiosInstance.get(`business-entities/find-by-id`, {
         headers: {
           authorization: `Auth ${token}`,
         },
         params: {
-          token: "token",
+          id,
         },
       });
+      console.log("data be", data);
       return data;
     },
-    enabled: enabled,
-    meta: { skipGlobalLoadingSpinner },
+    enabled: !!id && !!token,
   });
 }

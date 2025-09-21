@@ -30,21 +30,8 @@ import {
   EyeOff,
   Scissors,
 } from "lucide-react";
-import { registerBusinessFormValues } from "./registerBusinessFormValues";
-import { Service } from "./registerBusiness.types";
-
-const availableServices = [
-  { id: 1, name: "Haircut" },
-  { id: 2, name: "Hair Coloring" },
-  { id: 3, name: "Hair Styling" },
-  { id: 4, name: "Manicure" },
-  { id: 5, name: "Pedicure" },
-  { id: 6, name: "Facial Treatment" },
-  { id: 7, name: "Eyebrow Threading" },
-  { id: 8, name: "Hair Wash & Blow Dry" },
-  { id: 9, name: "Deep Conditioning" },
-  { id: 10, name: "Massage" },
-];
+import { registerBusinessFormValues, Service } from "@/app/types";
+import { useListAllActiveServices } from "@/app/queries";
 
 interface RegisterBusinessFormProps {
   setCurrentStep: Dispatch<SetStateAction<number>>;
@@ -65,6 +52,7 @@ export const RegisterBusinessForm: React.FC<
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [showConfirmPassword, setShowConfirmPassword] =
     useState<boolean>(false);
+  const { data: availableServices = [] } = useListAllActiveServices({});
 
   const addService = (serviceId: number) => {
     const selectedService = availableServices.find(
@@ -72,9 +60,10 @@ export const RegisterBusinessForm: React.FC<
     );
     if (selectedService && !values.services.find((s) => s.id === serviceId)) {
       const newService: Service = {
-        id: selectedService.id,
+        id: selectedService.id || 0,
         name: selectedService.name,
         duration: 60,
+        price: 1,
       };
       setFieldValue("services", [...values.services, newService]);
     }
@@ -82,14 +71,21 @@ export const RegisterBusinessForm: React.FC<
 
   const removeService = (serviceId: number) => {
     const updatedServices = values.services.filter(
-      (service) => service.id !== serviceId
+      (service: Service) => service.id !== serviceId
     );
     setFieldValue("services", updatedServices);
   };
 
   const updateServiceDuration = (serviceId: number, duration: number) => {
-    const updatedServices = values.services.map((service) =>
+    const updatedServices = values.services.map((service: Service) =>
       service.id === serviceId ? { ...service, duration } : service
+    );
+    setFieldValue("services", updatedServices);
+  };
+
+  const updateServicePrice = (serviceId: number, price: number) => {
+    const updatedServices = values.services.map((service: Service) =>
+      service.id === serviceId ? { ...service, price } : service
     );
     setFieldValue("services", updatedServices);
   };
@@ -365,7 +361,7 @@ export const RegisterBusinessForm: React.FC<
               />
               <p className="text-sm text-gray-500 mt-1">
                 This will be displayed on your public profile to attract
-                customers (minimum 50 characters)
+                customers (minimum 20 characters)
               </p>
             </div>
           </CardContent>
@@ -434,6 +430,7 @@ export const RegisterBusinessForm: React.FC<
                           <h4 className="font-medium text-gray-900">
                             {service.name}
                           </h4>
+
                           <div className="flex items-center mt-2">
                             <Clock className="h-4 w-4 text-gray-400 mr-2" />
                             <Label
@@ -457,6 +454,26 @@ export const RegisterBusinessForm: React.FC<
                               }
                               className="w-24"
                             />
+                            <Label
+                              htmlFor={`service-price-${service.id}`}
+                              className="text-sm text-gray-600 ml-2 mr-2"
+                            >
+                              Price ($):
+                            </Label>
+                            <Input
+                              id={`service-price-${service.id}`}
+                              type="number"
+                              min="1"
+                              max="480"
+                              value={service.price}
+                              onChange={(e) =>
+                                updateServicePrice(
+                                  service.id,
+                                  Number.parseInt(e.target.value)
+                                )
+                              }
+                              className="w-24 no-arrows"
+                            />
                           </div>
                           <ErrorMessage
                             name={`services.${index}.duration`}
@@ -466,9 +483,7 @@ export const RegisterBusinessForm: React.FC<
                         </div>
                         <Button
                           type="button"
-                          onClick={() =>
-                            removeService(service.id, setFieldValue, values)
-                          }
+                          onClick={() => removeService(service.id)}
                           variant="outline"
                           size="sm"
                           className="text-red-600 hover:text-red-700 bg-transparent ml-4"

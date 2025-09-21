@@ -51,6 +51,9 @@ export const servicesSchema = Yup.object({
           .min(15, "Duration must be at least 15 minutes")
           .max(480, "Duration cannot exceed 8 hours")
           .required("Duration is required"),
+        price: Yup.number()
+          .min(1, "Chagrges Must be grater then Zero")
+          .required("Charges is required"),
       })
     )
     .min(1, "Please select at least one service"),

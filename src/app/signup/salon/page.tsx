@@ -73,7 +73,11 @@ export default function SalonRegistrationPage() {
       const businessEntity = {
         name: values.businessName,
         description: values.businessDescription,
-        services: values.services,
+        services: values.services.map((ser) => ({
+          serviceId: ser.id,
+          duration: ser.duration,
+          price: ser.price,
+        })),
         locations: values.locations,
       };
 

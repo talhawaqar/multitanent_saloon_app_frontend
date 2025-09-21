@@ -22,7 +22,7 @@ export function useCreateCategory() {
     },
     onSuccess: async (createdCategory: CategoryType) => {
       queryClient.setQueryData(
-        [QueryKey.List_ALL_CATEGORIES, "userProfileId", "params"],
+        [QueryKey.List_ALL_CATEGORIES],
         (items: CategoryType[] = []) => [...items, createdCategory]
       );
     },
